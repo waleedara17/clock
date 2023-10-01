@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Employee Entry/Exit Records</title>
+</head>
+<body>
+<h1>Employee Entry/Exit Records</h1>
+
+<div>
+    <label for="employeeSelect">Select Employee: </label>
+    <select id="employeeSelect">
+        <!-- Populate this select dropdown with employee options -->
+        <option value="employee1">Employee 1</option>
+        <option value="employee2">Employee 2</option>
+        <!-- Add more options for other employees -->
+    </select>
+</div>
+
+<table>
+    <thead>
+    <tr>
+        <th>Entry Time</th>
+        <th>Exit Time</th>
+    </tr>
+    </thead>
+    <tbody id="entryExitTable">
+    <!-- Entries for the selected employee will be displayed here -->
+    </tbody>
+</table>
+
+<script>
+    const employeeSelect = document.getElementById('employeeSelect');
+    const entryExitTable = document.getElementById('entryExitTable');
+
+    // Add an event listener to the employee select dropdown
+    employeeSelect.addEventListener('change', () => {
+        const selectedEmployee = employeeSelect.value;
+
+        // Send a request to fetch entry/exit records for the selected employee
+        fetch(`/employees/${selectedEmployee}/entry-exit-records`)
+            .then(response => response.json())
+            .then(data => {
+                // Clear the table
+                entryExitTable.innerHTML = '';
+
+                // Populate the table with entry/exit records
+                data.forEach(record => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${record.entry_time}</td>
+                        <td>${record.exit_time}</td>
+                    `;
+                    entryExitTable.appendChild(row);
+                });
+            })
+            .catch(error => {
+                console.error('Error fetching entry/exit records:', error);
+            });
+    });
+</script>
+</body>
+</html>

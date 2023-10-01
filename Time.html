@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Entry/Exit Reporting</title>
+</head>
+<body>
+<h1>Entry/Exit Reporting</h1>
+
+<div>
+    <label for="employeeSelect">Select Employee: </label>
+    <select id="employeeSelect">
+        <!-- Populate this select dropdown with employee options -->
+        <option value="employee1">Employee 1</option>
+        <option value="employee2">Employee 2</option>
+        <!-- Add more options for other employees -->
+    </select>
+</div>
+
+<div>
+    <button id="entryButton">Entry</button>
+    <button id="exitButton">Exit</button>
+</div>
+
+<div>
+    <p>Entry Time: <span id="entryTime">Not recorded</span></p>
+    <p>Exit Time: <span id="exitTime">Not recorded</span></p>
+</div>
+
+<script>
+    // Add event listeners to the Entry and Exit buttons
+    const entryButton = document.getElementById('entryButton');
+    const exitButton = document.getElementById('exitButton');
+    const entryTimeSpan = document.getElementById('entryTime');
+    const exitTimeSpan = document.getElementById('exitTime');
+    const employeeSelect = document.getElementById('employeeSelect');
+
+    entryButton.addEventListener('click', () => {
+        const selectedEmployee = employeeSelect.value;
+        const currentTime = new Date().toLocaleString();
+
+        // Send a request to record entry time for the selected employee
+        // You can use fetch or another AJAX library to send the request to your server
+        // Example using fetch:
+        fetch(`/employees/${selectedEmployee}/entry`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ time: currentTime }),
+        })
+            .then(response => response.json())
+            .then(data => {
+                entryTimeSpan.textContent = data.message;
+            })
+            .catch(error => {
+                console.error('Error recording entry:', error);
+            });
+    });
+
+    exitButton.addEventListener('click', () => {
+        const selectedEmployee = employeeSelect.value;
+        const currentTime = new Date().toLocaleString();
+
+        // Send a request to record exit time for the selected employee
+        // Example using fetch (similar to the entry button):
+        fetch(`/employees/${selectedEmployee}/exit`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ time: currentTime }),
+        })
+            .then(response => response.json())
+            .then(data => {
+                exitTimeSpan.textContent = data.message;
+            })
+            .catch(error => {
+                console.error('Error recording exit:', error);
+            });
+    });
+</script>
+</body>
+</html>
